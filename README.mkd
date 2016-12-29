@@ -1,4 +1,5 @@
+*Note: There is no release, though it Works For Me™*
+
 # fluxbb-activity
 
-Dashboard for presenting FluxBB posting activity using the SQL database
-as the data source.
+Activity stats dashboard for FluxBB mining the SQL database.
