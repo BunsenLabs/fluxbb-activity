@@ -1,11 +1,8 @@
-dist:
-	python3 setup.py sdist
+PREFIX ?= /opt/fluxbb-activity
+INSTALLDIR = $(DESTDIR)$(PREFIX)/lib/fluxbb-activity
 
-clean:
-	rm -rf ./*.egg-info
-
-fluxbbactivity.1: fluxbbactivity.1.rst
-	rst2man $< > $@
-
-
-.PHONY: dist
+install:
+	install -d "$(INSTALLDIR)"
+	cp -r -- fluxbbactivity "$(INSTALLDIR)"/
+	find "$(INSTALLDIR)" -type d -exec chmod 755 {} \+
+	find "$(INSTALLDIR)" -type f -exec chmod go+r {} \+
