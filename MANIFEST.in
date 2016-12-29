@@ -1,0 +1,4 @@
+recursive-include fluxbbactivity/sql *
+recursive-include fluxbbactivity/www *
+recursive-include fluxbbactivity/systemd *
+

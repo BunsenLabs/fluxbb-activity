@@ -1,0 +1,4 @@
+# fluxbb-activity
+
+Dashboard for presenting FluxBB posting activity using the SQL database
+as the data source.
