@@ -1,11 +1,8 @@
 var CHARTS = {}; /* { anchor: Chart() } */
 const [ ANCHOR, URL ] = [ 0, 1 ];
 const DATA_SPEC = [
-  [ "#counts",                            "api/counts/all" ],
-  [ "#posts-per-day-month-year",          "api/posts/per-day-month-year" ],
   [ "#posts-per-hour",                    "api/posts/per-hour" ],
   [ "#posts-per-month-year",              "api/posts/per-month-year" ],
-  [ "#registrations-per-day-month-year" , "api/registrations/per-day-month-year" ],
   [ "#registrations-per-hour",            "api/registrations/per-hour" ],
   [ "#registrations-per-month-year",      "api/registrations/per-month-year" ],
   [ "#bans-by-creator",                   "api/bans/by-creator" ],
