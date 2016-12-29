@@ -2,4 +2,29 @@
 
 # fluxbb-activity
 
-Activity stats dashboard for FluxBB mining the SQL database.
+Activity stats dashboard for FluxBB mining the SQL database. The tool
+consists of a Python backend and a JS, in-browser frontend.
+
+## Synopsis
+
+```
+usage: __main__.py [-h] [--address ADDRESS] --sql-db SQL_DB --sql-password
+                   SQL_PASSWORD [--sql-socket SQL_SOCKET] --sql-user SQL_USER
+                   [--port PORT]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --address ADDRESS
+  --sql-db SQL_DB
+  --sql-password SQL_PASSWORD
+  --sql-socket SQL_SOCKET
+  --sql-user SQL_USER
+  --port PORT
+```
+
+## Dependencies
+
+* python3
+* python-bottle
+* python-mysqldb
+* python-cherrypy (optional)

@@ -95,5 +95,8 @@ def main():
             passwd = args.sql_password)
     fetcher = Fetcher(conn, queries)
     fetcher.start()
-    run(host = args.address, port = args.port, server = "cherrypy")
+    try:
+        run(host = args.address, port = args.port, server = "cherrypy")
+    except:
+        run(host = args.address, port = args.port)
     return 0
