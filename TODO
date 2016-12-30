@@ -1,3 +1,1 @@
-* charts: display bug where the last bar in bar charts spanning the full
-  grid cell is cut off or not visible until you zoom one step out.
 * add more charts, and possibly merge charts

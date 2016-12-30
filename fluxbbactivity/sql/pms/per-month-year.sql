@@ -1,7 +1,7 @@
 SELECT      MONTH(FROM_UNIXTIME(posted)),
             YEAR(FROM_UNIXTIME(posted)),
             COUNT(*)
-FROM        posts
+FROM        messages
 GROUP BY    MONTH(FROM_UNIXTIME(posted)), 
             YEAR(FROM_UNIXTIME(posted))
-ORDER BY posted ASC;
+order by posted asc;

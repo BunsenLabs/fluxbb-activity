@@ -6,13 +6,13 @@ const DATA_SPEC = [
   [ "#registrations-per-hour",            "api/registrations/per-hour" ],
   [ "#registrations-per-month-year",      "api/registrations/per-month-year" ],
   [ "#bans-by-creator",                   "api/bans/by-creator" ],
-  [ "#top-posters",                       "api/posts/by-user" ]
+  [ "#top-posters",                       "api/posts/by-user" ],
+  [ "#pms-per-month-year",                "api/pms/per-month-year"]
 ];
 const TSCALE_OPTIONS = {
   legend: { display: false },
   scales: {
     yAxes: [{ ticks: { beginAtZero: true } }],
-    xAxes: [{ type: "time", time: { format: "YYYY-MM-DD", unit: "month" } }]
   }
 };
 const DSCALE_OPTIONS = {
@@ -95,9 +95,9 @@ function munge_data(anchor, data) {
       labels: () => {
         return data.map((v) => {
           if(v[0]<10)
-            return `${v[1]}-0${v[0]}-01 00:00`;
+            return `${v[1]}-0${v[0]}`;
           else
-            return `${v[1]}-${v[0]}-01 00:00`;
+            return `${v[1]}-${v[0]}`;
         });
       }
     }
