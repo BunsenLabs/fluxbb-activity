@@ -23,11 +23,17 @@ def parse_cmdline():
     ap = ArgumentParser()
     ap.add_argument("--address", default="127.0.0.1")
     ap.add_argument("--sql-db", required=True)
-    ap.add_argument("--sql-password", required=True)
+    ap.add_argument("--sql-password")
     ap.add_argument("--sql-socket", default="/var/run/mysqld/mysqld.sock")
     ap.add_argument("--sql-user", required=True)
     ap.add_argument("--port", type=int, default=10000)
-    return ap.parse_args()
+    args = ap.parse_args()
+    if not args.sql_password:
+        try:
+            args.sql_password = os.environ["FXBA_SQL_PASSWORD"]
+        except:
+            raise BaseException("No SQL password supplied via command line or environment")
+    return args
 
 class Fetcher(threading.Thread):
     def __init__(self, conn, queries):

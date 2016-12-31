@@ -22,6 +22,11 @@ optional arguments:
   --port PORT
 ```
 
+## Environment variables
+
+* `FXBA_SQL_PASSWORD`: Substitute for --sql-password command line
+  argument to allow for removing the password from `ps` output.
+
 ## Dependencies
 
 * python3
