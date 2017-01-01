@@ -7,13 +7,15 @@ const DATA_SPEC = [
   [ "#registrations-per-month-year",      "api/registrations/per-month-year" ],
   [ "#bans-by-creator",                   "api/bans/by-creator" ],
   [ "#top-posters",                       "api/posts/by-user" ],
-  [ "#pms-per-month-year",                "api/pms/per-month-year"]
+  [ "#pms-per-month-year",                "api/pms/per-month-year"],
+  [ "#posts-per-day-month-year",          "api/posts/per-day-month-year"]
 ];
 const TSCALE_OPTIONS = {
   legend: { display: false },
   scales: {
     yAxes: [{ ticks: { beginAtZero: true } }],
-  }
+  },
+  elements: { point: { radius: 3 } }
 };
 const DSCALE_OPTIONS = {
   legend: { display: false },
@@ -100,6 +102,12 @@ function munge_data(anchor, data) {
             return `${v[1]}-${v[0]}`;
         });
       }
+    },
+    "per-day-month-year": {
+      type:"line",
+      options:TSCALE_OPTIONS,
+      values:()=>{ return data.map((v) => { return v[3]; }); },
+      labels:()=>{ return data.map((v) => { return `${v[0]}-${v[1]}-${v[2]}`; }); }
     }
   };
   for(let key in munge_spec) {
