@@ -66,6 +66,7 @@ class Fetcher(threading.Thread):
                 cur.execute(self.queries[cat][key])
                 t[cat][key] = [ self.convtuple(tup) for tup in cur.fetchall() ]
         cur.close()
+        self.conn.commit()
         t["ts"] = calendar.timegm(time.gmtime(time.time()))
         return t
 
