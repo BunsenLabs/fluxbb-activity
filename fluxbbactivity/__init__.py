@@ -38,9 +38,9 @@ def parse_cmdline():
     return args
 
 class Fetcher(threading.Thread):
-    def __init__(self, conn, queries):
+    def __init__(self, cconf, queries):
         super().__init__()
-        self.conn = conn
+        self.cconf = cconf
         self.queries = queries
         self.public = {}
 
@@ -58,16 +58,14 @@ class Fetcher(threading.Thread):
 
     def query(self):
         t = {}
-        cur = self.conn.cursor()
-        for cat in self.queries:
-            t[cat] = {}
-            for key in self.queries[cat]:
-                logging.debug("Executing query {}/{}".format(cat, key))
-                cur.execute(self.queries[cat][key])
-                t[cat][key] = [ self.convtuple(tup) for tup in cur.fetchall() ]
-        cur.close()
-        self.conn.commit()
-        t["ts"] = calendar.timegm(time.gmtime(time.time()))
+        with MySQLdb.connect(**self.cconf) as cur:
+            for cat in self.queries:
+                t[cat] = {}
+                for key in self.queries[cat]:
+                    logging.debug("Executing query {}/{}".format(cat, key))
+                    cur.execute(self.queries[cat][key])
+                    t[cat][key] = [ self.convtuple(tup) for tup in cur.fetchall() ]
+            t["ts"] = calendar.timegm(time.gmtime(time.time()))
         return t
 
     def convtuple(self, tup):
@@ -102,12 +100,8 @@ def main():
     logging.basicConfig(level=logging.DEBUG, format="%(asctime)s : %(name)s : %(levelname)s : %(message)s")
     args = parse_cmdline()
     queries = find_queries(SQLDIR)
-    conn = MySQLdb.connect(
-            db = args.sql_db,
-            unix_socket = args.sql_socket,
-            user = args.sql_user,
-            passwd = args.sql_password)
-    fetcher = Fetcher(conn, queries)
+    cconf = { "db" : args.sql_db, "unix_socket" : args.sql_socket, "user" : args.sql_user, "passwd" : args.sql_password }
+    fetcher = Fetcher(cconf, queries)
     fetcher.start()
     try:
         run(host = args.address, port = args.port, server = "cherrypy")
