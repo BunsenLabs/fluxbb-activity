@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from bottle import abort, route, run, static_file, redirect
+from bottle import abort, route, run, static_file
 from argparse import ArgumentParser
 import MySQLdb
 import sys
@@ -68,10 +68,6 @@ class Fetcher(threading.Thread):
 
     def convtuple(self, tup):
         return list(tup[:-1]) + [ int(tup[-1]) ]
-
-@route('/')
-def callback():
-    return redirect("/index.html")
 
 @route('/api/<cat>/<key>')
 def dataroute(cat, key):
