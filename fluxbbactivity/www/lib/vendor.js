@@ -130,7 +130,6 @@ function update() {
         let rawdata = d.v;
         let spec = munge_data(anchor, rawdata);
         if(spec) {
-          console.log(anchor, spec.options, spec.data);
           if(anchor in CHARTS) {
             let chart = CHARTS[anchor];
             chart.data = spec.data;
@@ -144,4 +143,15 @@ function update() {
   });
 };
 
-update();
+function trigger() {
+  update();
+  fetch("api/last-update").then((resp) => {
+    if(resp.status===200) {
+      resp.json().then((d) => {
+        document.querySelector("button#last-update").innerHTML = `Last update: ${new Date(parseInt(d.v,0xa)*1000)}`;
+      });
+    }
+  });
+}
+
+trigger();/*once*/

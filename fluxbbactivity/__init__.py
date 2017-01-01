@@ -8,6 +8,8 @@ import threading
 import logging
 import os
 import pathlib
+import time
+import calendar
 
 PUBLIC = {}
 SQLDIR = None
@@ -45,7 +47,7 @@ class Fetcher(threading.Thread):
     def run(self):
         self.event = threading.Event()
         self.update()
-        while not self.event.wait(timeout=3600):
+        while not self.event.wait(timeout=900):
             self.update()
 
     def update(self):
@@ -64,6 +66,7 @@ class Fetcher(threading.Thread):
                 cur.execute(self.queries[cat][key])
                 t[cat][key] = [ self.convtuple(tup) for tup in cur.fetchall() ]
         cur.close()
+        t["ts"] = calendar.timegm(time.gmtime(time.time()))
         return t
 
     def convtuple(self, tup):
@@ -72,6 +75,10 @@ class Fetcher(threading.Thread):
 @route('/api/<cat>/<key>')
 def dataroute(cat, key):
     return { "v":PUBLIC[cat][key] }
+
+@route("/api/last-update")
+def callback():
+    return { "v":PUBLIC["ts"] }
 
 @route('/<path:path>')
 def callback(path):
