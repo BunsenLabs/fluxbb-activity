@@ -154,4 +154,5 @@ function trigger() {
   });
 }
 
+$("button#last-update").click(trigger);
 trigger();/*once*/
