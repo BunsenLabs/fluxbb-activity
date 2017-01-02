@@ -1,4 +1,3 @@
-var CHARTS = {}; /* { anchor: Chart() } */
 const [ ANCHOR, URL ] = [ 0, 1 ];
 const DATA_SPEC = [
   [ "#posts-per-hour",                    "api/posts/per-hour" ],
@@ -129,15 +128,7 @@ function update() {
         let anchor = key.anchor;
         let rawdata = d.v;
         let spec = munge_data(anchor, rawdata);
-        if(spec) {
-          if(anchor in CHARTS) {
-            let chart = CHARTS[anchor];
-            chart.data = spec.data;
-            chart.update();
-          } else {
-            CHARTS[anchor] = new Chart(document.querySelector(anchor), spec);
-          }
-        }
+        new Chart(document.querySelector(anchor), spec);
       });
     });
   });
@@ -155,4 +146,4 @@ function trigger() {
 }
 
 $("button#last-update").click(trigger);
-trigger();/*once*/
+trigger();
