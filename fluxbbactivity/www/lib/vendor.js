@@ -139,11 +139,13 @@ function trigger() {
   fetch("api/last-update").then((resp) => {
     if(resp.status===200) {
       resp.json().then((d) => {
-        document.querySelector("button#last-update").innerHTML = `Last update: ${new Date(parseInt(d.v,0xa)*1000)}`;
+        setTimeout(trigger, 900000);
+        let lu = parseInt(d.v, 0xA)*1000;
+        document.querySelector("button#last-update").innerHTML = `Last update: ${new Date(lu)}`;
       });
     }
   });
-}
+};
 
 $("button#last-update").click(trigger);
 trigger();
