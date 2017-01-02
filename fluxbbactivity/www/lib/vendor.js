@@ -42,66 +42,27 @@ function munge_data(anchor, data) {
   let munge_spec = {
     "top-posters": {
       type:"bar",
-      values: () => {
-        return data.map((v) => {
-          return v[1];
-        });
-      },
-      labels: () => {
-        return data.map((v) => {
-          return v[0];
-        });
-      },
+      values: () => { return data.map((v) => { return v[1]; }); },
+      labels: () => { return data.map((v) => { return v[0]; }); },
       options:DSCALE_OPTIONS
     },
     "bans-by-creator": {
       type:"bar",
-      values: () => {
-        return data.map((v) => {
-          return v[1];
-        });
-      },
-      labels: () => {
-        return data.map((v) => {
-          return v[0];
-        });
-      },
+      values: () => { return data.map((v) => { return v[1]; });
+      }, labels: () => { return data.map((v) => { return v[0]; }); },
       options:DSCALE_OPTIONS
     },
     "per-hour": {
       type:"bar",
-      values: () => {
-        return data.map((v) => {
-          return v[1];
-        });
-      },
-      labels: () => {
-        return data.map((v) => {
-          let n = v[0];
-          if(n<10)
-            return `0${n}:00`;
-          else
-            return `${n}:00`;
-        });
-      },
+      values: () => { return data.map((v) => { return v[1]; }); },
+      labels: () => { return data.map((v) => { let n = v[0]; return n<10 ? `0${n}:00` : `${n}:00`; }); },
       options: DSCALE_OPTIONS
     },
     "per-month-year": {
       type: "bar",
       options: TSCALE_OPTIONS,
-      values: () => {
-        return data.map((v) => {
-          return v[2];
-        });
-      },
-      labels: () => {
-        return data.map((v) => {
-          if(v[0]<10)
-            return `${v[1]}-0${v[0]}`;
-          else
-            return `${v[1]}-${v[0]}`;
-        });
-      }
+      values: () => { return data.map((v) => { return v[2]; }); },
+      labels: () => { return data.map((v) => { return v[0]<10 ? `${v[1]}-0${v[0]}` : `${v[1]}-${v[0]}`; }); }
     },
     "per-day-month-year": {
       type:"line",
