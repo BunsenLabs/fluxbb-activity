@@ -1,8 +1,7 @@
-SELECT      MONTH(FROM_UNIXTIME(registered)),
-            YEAR(FROM_UNIXTIME(registered)),
+SELECT      MONTH(FROM_UNIXTIME(registered)) as month,
+            YEAR(FROM_UNIXTIME(registered)) as year,
             COUNT(*)
 FROM        users
 WHERE       id > 1
-GROUP BY    MONTH(FROM_UNIXTIME(registered)), 
-            YEAR(FROM_UNIXTIME(registered))
+GROUP BY    month, year
 order by registered asc;

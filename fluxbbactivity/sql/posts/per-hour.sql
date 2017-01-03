@@ -1,4 +1,4 @@
-SELECT    HOUR(FROM_UNIXTIME(posted)),
+SELECT    HOUR(FROM_UNIXTIME(posted)) as hour,
           COUNT(*)
 FROM      posts
-GROUP BY  HOUR(FROM_UNIXTIME(posted));
+GROUP BY  hour;

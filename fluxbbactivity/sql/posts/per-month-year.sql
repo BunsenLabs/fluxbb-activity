@@ -1,7 +1,6 @@
-SELECT      MONTH(FROM_UNIXTIME(posted)),
-            YEAR(FROM_UNIXTIME(posted)),
-            COUNT(*)
+SELECT      MONTH(FROM_UNIXTIME(posted)) as month,
+            YEAR(FROM_UNIXTIME(posted)) as year,
+            COUNT(*) as count
 FROM        posts
-GROUP BY    MONTH(FROM_UNIXTIME(posted)), 
-            YEAR(FROM_UNIXTIME(posted))
+GROUP BY    month, year
 ORDER BY posted ASC;

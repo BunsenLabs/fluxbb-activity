@@ -1,5 +1,5 @@
-SELECT      MONTH(FROM_UNIXTIME(registered)),
+SELECT      MONTH(FROM_UNIXTIME(registered)) month,
             COUNT(*)
 FROM        users
 WHERE       id > 1
-GROUP BY    MONTH(FROM_UNIXTIME(registered));
+GROUP BY    month;
