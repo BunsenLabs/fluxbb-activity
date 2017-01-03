@@ -7,7 +7,7 @@ const DATA_SPEC = [
   [ "#bans-by-creator",                   "api/bans/by-creator" ],
   [ "#top-posters",                       "api/posts/by-user" ],
   [ "#pms-per-month-year",                "api/pms/per-month-year"],
-  [ "#posts-per-day-month-year",          "api/posts/per-day-month-year"],
+  [ "#posts-per-day-month-year",          "api/posts/recent"],
   [ "#posts-per-week",                    "api/posts/by-week"]
 ];
 const TSCALE_OPTIONS = {
@@ -53,13 +53,13 @@ function munge_data(anchor, data) {
       options:DSCALE_OPTIONS
     },
     "per-hour": {
-      type:"bar",
+      type:"line",
       values: () => { return data.map((v) => { return v[1]; }); },
       labels: () => { return data.map((v) => { let n = v[0]; return n<10 ? `0${n}:00` : `${n}:00`; }); },
       options: DSCALE_OPTIONS
     },
     "per-month-year": {
-      type: "bar",
+      type: "line",
       options: TSCALE_OPTIONS,
       values: () => { return data.map((v) => { return v[2]; }); },
       labels: () => { return data.map((v) => { return v[0]<10 ? `${v[1]}-0${v[0]}` : `${v[1]}-${v[0]}`; }); }
