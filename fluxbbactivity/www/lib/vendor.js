@@ -110,7 +110,7 @@ function trigger() {
         let lu = parseInt(d.v, 0xA)*1000;/*[s]*/
         let ct = (new Date).getTime();
         setTimeout(trigger, 1000 * 930 - (ct - lu));
-        document.querySelector("button#last-update").innerHTML = `Last update: ${new Date(lu * 1000)}`;
+        document.querySelector("button#last-update").innerHTML = `Last update: ${new Date(lu)}`;
       });
     }
   });
