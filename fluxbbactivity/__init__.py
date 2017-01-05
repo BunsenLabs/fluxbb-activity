@@ -29,6 +29,7 @@ def parse_cmdline():
     ap.add_argument("--sql-socket", default="/var/run/mysqld/mysqld.sock")
     ap.add_argument("--sql-user", required=True)
     ap.add_argument("--port", type=int, default=10000)
+    ap.add_argument("--timeout", type=int, default=900)
     args = ap.parse_args()
     if not args.sql_password:
         try:
@@ -38,16 +39,17 @@ def parse_cmdline():
     return args
 
 class Fetcher(threading.Thread):
-    def __init__(self, cconf, queries):
+    def __init__(self, cconf, queries, timeout):
         super().__init__()
         self.cconf = cconf
         self.queries = queries
+        self.timeout = timeout
         self.public = {}
 
     def run(self):
         self.event = threading.Event()
         self.update()
-        while not self.event.wait(timeout=900):
+        while not self.event.wait(timeout=self.timeout):
             self.update()
 
     def update(self):
@@ -65,7 +67,8 @@ class Fetcher(threading.Thread):
                     logging.debug("Executing query {}/{}".format(cat, key))
                     cur.execute(self.queries[cat][key])
                     t[cat][key] = [ self.convtuple(tup) for tup in cur.fetchall() ]
-            t["ts"] = calendar.timegm(time.gmtime(time.time()))
+            t["ts"] = { "last_update": calendar.timegm(time.gmtime(time.time())),
+                        "update_interval": self.timeout }
         return t
 
     def convtuple(self, tup):
@@ -101,7 +104,7 @@ def main():
     args = parse_cmdline()
     queries = find_queries(SQLDIR)
     cconf = { "db" : args.sql_db, "unix_socket" : args.sql_socket, "user" : args.sql_user, "passwd" : args.sql_password }
-    fetcher = Fetcher(cconf, queries)
+    fetcher = Fetcher(cconf, queries, args.timeout)
     fetcher.start()
     try:
         run(host = args.address, port = args.port, server = "cherrypy")
