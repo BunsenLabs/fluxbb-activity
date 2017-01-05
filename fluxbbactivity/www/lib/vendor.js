@@ -107,7 +107,7 @@ function trigger() {
   fetch("api/last-update").then((resp) => {
     if(resp.status===200) {
       resp.json().then((d) => {
-        let lu = parseInt(d.v, 0xA);
+        let lu = parseInt(d.v, 0xA)*1000;/*[s]*/
         let ct = (new Date).getTime();
         setTimeout(trigger, 1000 * 930 - (ct - lu));
         document.querySelector("button#last-update").innerHTML = `Last update: ${new Date(lu * 1000)}`;
