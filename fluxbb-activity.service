@@ -1,0 +1,12 @@
+[Unit]
+Description=FluxBB Activity Dashboard
+After=network.target
+
+[Service]
+Type=simple
+User=nobody
+WorkingDirectory=/opt/fluxbb-activity
+ExecStart=/usr/bin/python3 -m fluxbbactivity --address 127.0.0.1 --port 10000 --sql-socket /var/run/mysqld/mysqld.sock --sql-user %USER% --sql-password %PASSWORD% --sql-db %DB%
+
+[Install]
+WantedBy=multi-user.target
