@@ -108,9 +108,7 @@ function trigger() {
     if(resp.status===200) {
       resp.json().then((d) => {
         let lu = parseInt(d.v.last_update, 0xA)*1000;/*[s]*/
-        let iv = (parseInt(d.v.update_interval, 0xA) + 10)*1000;
-        let ct = (new Date).getTime();
-        setTimeout(trigger, iv - (ct - lu));
+        setTimeout(trigger, 300000);
         document.querySelector("button#last-update").innerHTML = `Last update: ${new Date(lu)}`;
       });
     }
