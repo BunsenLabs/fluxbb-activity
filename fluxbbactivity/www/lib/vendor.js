@@ -8,7 +8,8 @@ const DATA_SPEC = [
   [ "#top-posters",                       "api/posts/by-user" ],
   [ "#pms-per-month-year",                "api/pms/per-month-year"],
   [ "#posts-per-day-month-year",          "api/posts/recent"],
-  [ "#posts-per-week",                    "api/posts/by-week"]
+  [ "#posts-per-week",                    "api/posts/by-week"],
+  [ "counts",                             "api/counts/all" ]
 ];
 const TSCALE_OPTIONS = {
   legend: { display: false },
@@ -89,14 +90,26 @@ function munge_data(anchor, data) {
   }
 };
 
+function update_stats_table(data) {
+  data.forEach((vec) => {
+    let anchor = document.querySelector(`td#${vec[0]}`);
+    if(anchor)
+      anchor.textContent = vec[1].toLocaleString();
+  });
+}
+
 function update() {
   fetch_data().then((v) => {
     v.forEach((key) => {
       key.data.then((d) => {
         let anchor = key.anchor;
         let rawdata = d.v;
-        let spec = munge_data(anchor, rawdata);
-        new Chart(document.querySelector(anchor), spec);
+        if(anchor === "counts") {
+          update_stats_table(rawdata);
+        } else {
+          let spec = munge_data(anchor, rawdata);
+          new Chart(document.querySelector(anchor), spec);
+        }
       });
     });
   });

@@ -12,5 +12,7 @@ SELECT    'pending_registrations', COUNT(*)
   FROM    users
   WHERE   group_id = 0 AND id > 1
 UNION
-SELECT    'bans', COUNT(*)
-  FROM bans;
+  SELECT    'bans', COUNT(*)
+  FROM bans
+UNION
+  SELECT 'messages',COUNT(*) FROM messages;
