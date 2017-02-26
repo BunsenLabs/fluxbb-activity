@@ -74,8 +74,8 @@ function munge_data(anchor, data) {
     "per-week": {
       type:"line",
       options:DSCALE_OPTIONS,
-      values:()=>{ return data.map((v) => { return v[1]; }); },
-      labels:()=>{ return data.map((v) => { return v[0]; }); }
+      values:()=>{ return data.slice(-52).map((v) => { return v[1]; }); },
+      labels:()=>{ return data.slice(-52).map((v) => { return v[0]; }); }
     }
   };
   for(let key in munge_spec) {
