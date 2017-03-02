@@ -9,7 +9,8 @@ const DATA_SPEC = [
   [ "#pms-per-month-year",                "api/pms/per-month-year"],
   [ "#posts-per-day-month-year",          "api/posts/recent"],
   [ "#posts-per-week",                    "api/posts/by-week"],
-  [ "counts",                             "api/counts/all" ]
+  [ "counts",                             "api/counts/all" ],
+  [ "#table-topics",                      "api/topics/top20" ]
 ];
 const TSCALE_OPTIONS = {
   legend: { display: false },
@@ -98,6 +99,38 @@ function update_stats_table(data) {
   });
 }
 
+function make_table(anchor, data) {
+  let header = [ "Topic", "View count" ];
+  let body = data;
+  let table = document.querySelector(anchor);
+  
+  let thead= document.createElement("thead");
+  let tr = document.createElement("tr");
+  header.forEach((col) => {
+    let th = document.createElement("th");
+    th.textContent = col;
+    tr.appendChild(th);
+  });
+  thead.appendChild(tr);
+  table.appendChild(thead);
+
+  let tbody = document.createElement("tbody");
+  body.forEach((row) => {
+    let tr = document.createElement("tr");
+    let id = row[0];
+    row.slice(1).forEach((col) => {
+      let td = document.createElement("td");
+      let a = document.createElement("a");
+      a.setAttribute("href", `https://forums.bunsenlabs.org/viewtopic.php?id=${id}`);
+      a.textContent = col;
+      td.appendChild(a);
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+};
+
 function update() {
   fetch_data().then((v) => {
     v.forEach((key) => {
@@ -106,6 +139,8 @@ function update() {
         let rawdata = d.v;
         if(anchor === "counts") {
           update_stats_table(rawdata);
+        } else if(anchor.startsWith("#table-")) {
+          make_table(anchor, rawdata);
         } else {
           let spec = munge_data(anchor, rawdata);
           new Chart(document.querySelector(anchor), spec);
