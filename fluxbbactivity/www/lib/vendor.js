@@ -103,6 +103,8 @@ function make_table(anchor, data) {
   let header = [ "Topic", "View count" ];
   let body = data;
   let table = document.querySelector(anchor);
+
+  if(table.firstChild) table.removeChild(table.firstChild);
   
   let thead= document.createElement("thead");
   let tr = document.createElement("tr");
