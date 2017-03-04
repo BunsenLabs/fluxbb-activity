@@ -10,8 +10,13 @@ const DATA_SPEC = [
   [ "#posts-per-day-month-year",          "api/posts/recent"],
   [ "#posts-per-week",                    "api/posts/by-week"],
   [ "counts",                             "api/counts/all" ],
-  [ "#table-topics",                      "api/topics/top20" ]
+  [ "#table-topics",                      "api/topics/top-views" ],
+  [ "#table-topics-replies",              "api/topics/top-replies" ]
 ];
+const TABLE_HEADERS = {
+  "#table-topics":          [ "Topic", "Views" ],
+  "#table-topics-replies":  [ "Topic", "Replies" ]
+};
 const TSCALE_OPTIONS = {
   legend: { display: false },
   scales: {
@@ -100,7 +105,7 @@ function update_stats_table(data) {
 }
 
 function make_table(anchor, data) {
-  let header = [ "Topic", "View count" ];
+  let header = TABLE_HEADERS[anchor];
   let body = data;
   let table = document.querySelector(anchor);
 
