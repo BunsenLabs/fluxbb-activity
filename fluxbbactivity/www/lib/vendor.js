@@ -8,7 +8,9 @@ const DATA_SPEC = [
   [ "#top-posters",                       "api/posts/by-user" ],
   [ "#pms-per-month-year",                "api/pms/per-month-year"],
   [ "#posts-per-day-month-year",          "api/posts/recent"],
+  [ "#topics-per-day-month-year",         "api/topics/recent"],
   [ "#posts-per-week",                    "api/posts/by-week"],
+  [ "#topics-per-week",                   "api/topics/by-week"],
   [ "counts",                             "api/counts/all" ],
   [ "#table-topics",                      "api/topics/top-views" ],
   [ "#table-topics-replies",              "api/topics/top-replies" ]
