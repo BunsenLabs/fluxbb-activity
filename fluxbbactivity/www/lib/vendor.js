@@ -16,8 +16,8 @@ const DATA_SPEC = [
   [ "#table-topics-replies",              "api/topics/top-replies" ]
 ];
 const TABLE_HEADERS = {
-  "#table-topics":          [ "Topic", "Views" ],
-  "#table-topics-replies":  [ "Topic", "Replies" ]
+  "#table-topics":          [ "Topic", "Views", "%" ],
+  "#table-topics-replies":  [ "Topic", "Replies", "%" ]
 };
 const TSCALE_OPTIONS = {
   legend: { display: false },
