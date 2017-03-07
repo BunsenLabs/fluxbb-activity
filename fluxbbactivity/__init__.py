@@ -72,7 +72,7 @@ class Fetcher(threading.Thread):
         return t
 
     def convtuple(self, tup):
-        return list(tup[:-1]) + [ int(tup[-1]) ]
+        return list(tup[:-1]) + [ float(tup[-1]) ]
 
 @route('/api/<cat>/<key>')
 def dataroute(cat, key):
