@@ -10,4 +10,6 @@ SELECT  'bans', COUNT(*) FROM bans
 UNION
 SELECT  'messages',COUNT(*) FROM messages
 UNION
-SELECT  'users_today',COUNT(*) FROM users where last_visit >= UNIX_TIMESTAMP(CURRENT_DATE());
+SELECT  'users_today',COUNT(*) FROM users where last_visit >= UNIX_TIMESTAMP(CURRENT_DATE())
+UNION
+select  'views',sum(num_views) FROM topics;
