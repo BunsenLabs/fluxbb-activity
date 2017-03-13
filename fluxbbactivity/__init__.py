@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 
-from bottle import abort, route, run, static_file
 from argparse import ArgumentParser
+from bottle import abort, route, run, static_file
 import MySQLdb
-import sys
-import threading
+import calendar
 import logging
 import os
 import pathlib
+import sys
+import threading
 import time
-import calendar
+import sqlite3
 
+APIVER = 0
 PUBLIC = {}
 SQLDIR = None
 WWWDIR = None
@@ -30,6 +32,7 @@ def parse_cmdline():
     ap.add_argument("--sql-user", required=True)
     ap.add_argument("--port", type=int, default=10000)
     ap.add_argument("--timeout", type=int, default=900)
+    ap.add_argument("--journal", required=True)
     args = ap.parse_args()
     if not args.sql_password:
         try:
@@ -37,6 +40,16 @@ def parse_cmdline():
         except:
             raise BaseException("No SQL password supplied via command line or environment")
     return args
+
+class Journal:
+    def __enter__(self, path):
+        pass
+
+    def __exit__(self, path):
+        pass
+
+    def __prepare_table(self, path):
+        pass
 
 class Fetcher(threading.Thread):
     def __init__(self, cconf, queries, timeout):
@@ -74,11 +87,11 @@ class Fetcher(threading.Thread):
     def convtuple(self, tup):
         return list(tup[:-1]) + [ float(tup[-1]) ]
 
-@route('/api/<cat>/<key>')
+@route('/api/0/<cat>/<key>')
 def dataroute(cat, key):
     return { "v":PUBLIC[cat][key] }
 
-@route("/api/last-update")
+@route("/api/0/last-update")
 def callback():
     return { "v":PUBLIC["ts"] }
 

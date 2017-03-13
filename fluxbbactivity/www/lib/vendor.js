@@ -1,19 +1,20 @@
 const [ ANCHOR, URL ] = [ 0, 1 ];
+const API_VERSION = 0;
 const DATA_SPEC = [
-  [ "#posts-per-hour",                    "api/posts/per-hour" ],
-  [ "#posts-per-month-year",              "api/posts/per-month-year" ],
-  [ "#registrations-per-hour",            "api/registrations/per-hour" ],
-  [ "#registrations-per-month-year",      "api/registrations/per-month-year" ],
-  [ "#bans-by-creator",                   "api/bans/by-creator" ],
-  [ "#top-posters",                       "api/posts/by-user" ],
-  [ "#pms-per-month-year",                "api/pms/per-month-year"],
-  [ "#posts-per-day-month-year",          "api/posts/recent"],
-  [ "#topics-per-day-month-year",         "api/topics/recent"],
-  [ "#posts-per-week",                    "api/posts/by-week"],
-  [ "#topics-per-week",                   "api/topics/by-week"],
-  [ "counts",                             "api/counts/all" ],
-  [ "#table-topics",                      "api/topics/top-views" ],
-  [ "#table-topics-replies",              "api/topics/top-replies" ]
+  [ "#posts-per-hour",                    `api/${API_VERSION}/posts/per-hour` ],
+  [ "#posts-per-month-year",              `api/${API_VERSION}/posts/per-month-year` ],
+  [ "#registrations-per-hour",            `api/${API_VERSION}/registrations/per-hour` ],
+  [ "#registrations-per-month-year",      `api/${API_VERSION}/registrations/per-month-year` ],
+  [ "#bans-by-creator",                   `api/${API_VERSION}/bans/by-creator` ],
+  [ "#top-posters",                       `api/${API_VERSION}/posts/by-user` ],
+  [ "#pms-per-month-year",                `api/${API_VERSION}/pms/per-month-year`],
+  [ "#posts-per-day-month-year",          `api/${API_VERSION}/posts/recent`],
+  [ "#topics-per-day-month-year",         `api/${API_VERSION}/topics/recent`],
+  [ "#posts-per-week",                    `api/${API_VERSION}/posts/by-week`],
+  [ "#topics-per-week",                   `api/${API_VERSION}/topics/by-week`],
+  [ "counts",                             `api/${API_VERSION}/counts/all` ],
+  [ "#table-topics",                      `api/${API_VERSION}/topics/top-views` ],
+  [ "#table-topics-replies",              `api/${API_VERSION}/topics/top-replies` ]
 ];
 const TABLE_HEADERS = {
   "#table-topics":          [ "Topic", "Views", "%" ],

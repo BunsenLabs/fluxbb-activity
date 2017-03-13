@@ -28,6 +28,40 @@ optional arguments:
 * `FXBA_SQL_PASSWORD`: Substitute for --sql-password command line
   argument to allow for removing the password from `ps` output.
 
+## Journal and data history
+
+The service keeps a data history as a sqlite3 database with the
+following table schema:
+
+```sql
+CREATE TABLE fluxbbajournal (
+  id          INTEGER PRIMARY KEY,
+  apiversion  INTEGER,
+  ts          TEXT,
+  query       TEXT,
+  value       TEXT
+);
+```
+
+* `apiversion` -- denotes the query naming scheme version.
+  Must now be 0.
+* `ts` -- timestamp in ISO 9660 format.
+* `query` -- name of the query, corresponding to its .sql file path
+  below ./sql.
+* `value` -- the query result, in JSON format just as it would have been
+  available through the API.
+
+There is a history API for accessing historical data to support trend
+calculations in the web application.
+
+* `/api/0/history/horizon` -- returns the horizon of the available
+  history data:
+  ```
+  { "rows": INT, "ts_min": TEXT, "ts_max": TEXT }
+  ```
+* `/api/0/history/<key>/<startdate>/<enddate>` -- returns history data
+  between the given datetimes, as SQL rows, ordered by primary key.
+
 ## Dependencies
 
 * python3
