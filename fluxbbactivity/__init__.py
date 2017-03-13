@@ -4,6 +4,7 @@ from argparse import ArgumentParser
 from bottle import abort, route, run, static_file
 import MySQLdb
 import calendar
+import datetime
 import logging
 import os
 import pathlib
@@ -11,6 +12,7 @@ import sys
 import threading
 import time
 import sqlite3
+import json
 
 APIVER = 0
 PUBLIC = {}
@@ -42,21 +44,34 @@ def parse_cmdline():
     return args
 
 class Journal:
-    def __enter__(self, path):
-        pass
+    def __init__(self, path):
+        self.path = path
 
-    def __exit__(self, path):
-        pass
+    def __enter__(self):
+        self.conn = sqlite3.connect(self.path)
+        cur = self.conn.cursor()
+        cur.execute(""" select name from sqlite_master where type='table' and name='journal'; """)
+        if not cur.fetchone():
+            cur.execute(""" create table journal (date TEXT, apiversion INTEGER, query TEXT, value TEXT ); """)
+        self.conn.commit()
+        return self
 
-    def __prepare_table(self, path):
-        pass
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.conn.close()
+
+    def commit(self, query, value):
+        cur = self.conn.cursor()
+        cur.execute(""" INSERT INTO journal VALUES ( ?, ?, ?, ? ) """,
+                (str(datetime.datetime.utcnow().isoformat()), APIVER, query, value,))
+        self.conn.commit()
 
 class Fetcher(threading.Thread):
-    def __init__(self, cconf, queries, timeout):
+    def __init__(self, cconf, queries, timeout, journalpath):
         super().__init__()
         self.cconf = cconf
         self.queries = queries
         self.timeout = timeout
+        self.journal = journalpath
         self.public = {}
 
     def run(self):
@@ -74,12 +89,14 @@ class Fetcher(threading.Thread):
     def query(self):
         t = {}
         with MySQLdb.connect(**self.cconf) as cur:
-            for cat in self.queries:
-                t[cat] = {}
-                for key in self.queries[cat]:
-                    logging.debug("Executing query {}/{}".format(cat, key))
-                    cur.execute(self.queries[cat][key])
-                    t[cat][key] = [ self.convtuple(tup) for tup in cur.fetchall() ]
+            with Journal(self.journal) as jur:
+                for cat in self.queries:
+                    t[cat] = {}
+                    for key in self.queries[cat]:
+                        logging.debug("Executing query {}/{}".format(cat, key))
+                        cur.execute(self.queries[cat][key])
+                        t[cat][key] = [ self.convtuple(tup) for tup in cur.fetchall() ]
+                        jur.commit("{}/{}".format(cat, key), json.dumps(t[cat][key]))
             t["ts"] = { "last_update": calendar.timegm(time.gmtime(time.time())),
                         "update_interval": self.timeout }
         return t
@@ -87,11 +104,11 @@ class Fetcher(threading.Thread):
     def convtuple(self, tup):
         return list(tup[:-1]) + [ float(tup[-1]) ]
 
-@route('/api/0/<cat>/<key>')
+@route("/api/{}/<cat>/<key>".format(APIVER))
 def dataroute(cat, key):
     return { "v":PUBLIC[cat][key] }
 
-@route("/api/0/last-update")
+@route("/api/{}/last-update".format(APIVER))
 def callback():
     return { "v":PUBLIC["ts"] }
 
@@ -117,7 +134,7 @@ def main():
     args = parse_cmdline()
     queries = find_queries(SQLDIR)
     cconf = { "db" : args.sql_db, "unix_socket" : args.sql_socket, "user" : args.sql_user, "passwd" : args.sql_password }
-    fetcher = Fetcher(cconf, queries, args.timeout)
+    fetcher = Fetcher(cconf, queries, args.timeout, args.journal)
     fetcher.start()
     try:
         run(host = args.address, port = args.port, server = "cherrypy")
