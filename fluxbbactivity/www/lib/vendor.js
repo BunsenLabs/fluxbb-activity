@@ -13,6 +13,7 @@ const DATA_SPEC = [
   [ "#posts-per-week",                    `api/${API_VERSION}/posts/by-week`],
   [ "#topics-per-week",                   `api/${API_VERSION}/topics/by-week`],
   [ "counts",                             `api/${API_VERSION}/counts/all` ],
+  [ "#users-by-timezone",                 `api/${API_VERSION}/users/by-timezone` ],
   [ "#table-topics",                      `api/${API_VERSION}/topics/top-views` ],
   [ "#table-topics-replies",              `api/${API_VERSION}/topics/top-replies` ]
 ];
@@ -52,6 +53,12 @@ function munge_data(anchor, data) {
   let munge_spec = {
     "top-posters": {
       type:"bar",
+      values: () => { return data.map((v) => { return v[1]; }); },
+      labels: () => { return data.map((v) => { return v[0]; }); },
+      options:DSCALE_OPTIONS
+    },
+    "users-by-timezone": {
+      type:"line",
       values: () => { return data.map((v) => { return v[1]; }); },
       labels: () => { return data.map((v) => { return v[0]; }); },
       options:DSCALE_OPTIONS
