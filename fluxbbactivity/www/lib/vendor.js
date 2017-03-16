@@ -163,7 +163,7 @@ function update() {
 
 function trigger() {
   update();
-  fetch("api/last-update").then((resp) => {
+  fetch("api/0/last-update").then((resp) => {
     if(resp.status===200) {
       resp.json().then((d) => {
         let lu = parseInt(d.v.last_update, 0xA)*1000;/*[s]*/
