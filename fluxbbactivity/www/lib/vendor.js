@@ -175,7 +175,7 @@ function trigger() {
       resp.json().then((d) => {
         let lu = parseInt(d.v.last_update, 0xA)*1000;/*[s]*/
         setTimeout(trigger, 300000);
-        document.querySelector("button#last-update").innerHTML = `Last update: ${new Date(lu)}`;
+        document.querySelector("button#last-update").innerHTML = `Last update: ${new Date(lu)} [+${parseInt(d.v.update_interval).toLocaleString()}s]`;
       });
     }
   });
