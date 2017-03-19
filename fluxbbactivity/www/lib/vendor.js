@@ -136,11 +136,12 @@ function make_table(anchor, data) {
   body.forEach((row) => {
     let tr = document.createElement("tr");
     let id = row[0];
+    let colidx = 0;
     row.slice(1).forEach((col) => {
       let td = document.createElement("td");
       let a = document.createElement("a");
       a.setAttribute("href", `https://forums.bunsenlabs.org/viewtopic.php?id=${id}`);
-      a.textContent = col;
+      a.textContent = ++colidx>1 ? parseFloat(col).toLocaleString() : col;
       td.appendChild(a);
       tr.appendChild(td);
     });
