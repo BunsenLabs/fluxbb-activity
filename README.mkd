@@ -11,6 +11,7 @@ consists of a Python backend and a JS, in-browser frontend.
 usage: __main__.py [-h] [--address ADDRESS] --sql-db SQL_DB
                    [--sql-password SQL_PASSWORD] [--sql-socket SQL_SOCKET]
                    --sql-user SQL_USER [--port PORT] [--timeout TIMEOUT]
+                   --journal JOURNAL
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -21,6 +22,7 @@ optional arguments:
   --sql-user SQL_USER
   --port PORT
   --timeout TIMEOUT
+  --journal JOURNAL
 ```
 
 ## Environment variables
