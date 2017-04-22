@@ -65,6 +65,14 @@ class Journal:
                 (str(datetime.datetime.utcnow().isoformat()), APIVER, query, value,))
         self.conn.commit()
 
+    def history(self, key):
+        if key=="views":
+            return self.__history_views()
+        return list()
+
+    def __history_views(self):
+        pass
+
 class Fetcher(threading.Thread):
     def __init__(self, cconf, queries, timeout, journalpath):
         super().__init__()
@@ -106,11 +114,24 @@ class Fetcher(threading.Thread):
 
 @route("/api/{}/<cat>/<key>".format(APIVER))
 def dataroute(cat, key):
-    return { "v":PUBLIC[cat][key] }
+    if (cat in PUBLIC) and (key in PUBLIC[cat]):
+        return { "v":PUBLIC[cat][key] }
+    else:
+        return dict()
 
 @route("/api/{}/last-update".format(APIVER))
 def callback():
-    return { "v":PUBLIC["ts"] }
+    if "ts" in PUBLIC:
+        return { "v":PUBLIC["ts"] }
+    else:
+        return { "v": 0 }
+
+@route("/api/{}/history/<key>")
+def callback():
+    if ("history" in PUBLIC) and (key in PUBLIC["history"]):
+        return { "v": PUBLIC["history"][key] }
+    else:
+        return { "v": list() }
 
 @route('/<path:path>')
 def callback(path):
