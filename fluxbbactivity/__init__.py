@@ -66,9 +66,7 @@ class Journal:
         self.conn.commit()
 
     def history(self, key):
-        if key=="views":
-            return self.__history_views()
-        return list()
+        pass
 
     def __history_views(self):
         pass
@@ -95,16 +93,19 @@ class Fetcher(threading.Thread):
         logging.info("Fetcher.update() finished.")
 
     def query(self):
-        t = {}
+        t = { "history": dict() }
         with MySQLdb.connect(**self.cconf) as cur:
             with Journal(self.journal) as jur:
                 for cat in self.queries:
                     t[cat] = {}
+                    t["history"][cat] = {}
                     for key in self.queries[cat]:
                         logging.debug("Executing query {}/{}".format(cat, key))
                         cur.execute(self.queries[cat][key])
                         t[cat][key] = [ self.convtuple(tup) for tup in cur.fetchall() ]
-                        jur.commit("{}/{}".format(cat, key), json.dumps(t[cat][key]))
+                        query_key = "{}/{}".format(cat, key)
+                        jur.commit(query_key, json.dumps(t[cat][key]))
+                        t["history"][cat][key] = jur.history(query_key)
             t["ts"] = { "last_update": calendar.timegm(time.gmtime(time.time())),
                         "update_interval": self.timeout }
         return t
@@ -126,12 +127,12 @@ def callback():
     else:
         return { "v": 0 }
 
-@route("/api/{}/history/<key>")
+@route("/api/{}/history/<cat>/<key>".format(APIVER))
 def callback():
-    if ("history" in PUBLIC) and (key in PUBLIC["history"]):
-        return { "v": PUBLIC["history"][key] }
-    else:
-        return { "v": list() }
+    try:
+        return { "v": PUBLIC["history"][cat][key] }
+    except BaseException as err:
+        return { "v": dict(), "error": err }
 
 @route('/<path:path>')
 def callback(path):
