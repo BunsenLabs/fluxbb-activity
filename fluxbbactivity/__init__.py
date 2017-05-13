@@ -66,7 +66,14 @@ class Journal:
         self.conn.commit()
 
     def history(self, key):
-        pass
+        cur = self.conn.cursor()
+        cur.execute(""" SELECT date,value
+                        FROM journal
+                        WHERE query = ? AND apiversion = ?""",
+                (key, APIVER,));
+        rows = list(map(lambda v: [ v[0], json.loads(v[1]) ], cur.fetchall()))
+        self.conn.commit()
+        return rows
 
     def __history_views(self):
         pass
@@ -100,12 +107,13 @@ class Fetcher(threading.Thread):
                     t[cat] = {}
                     t["history"][cat] = {}
                     for key in self.queries[cat]:
-                        logging.debug("Executing query {}/{}".format(cat, key))
+                        query_key = "{}/{}".format(cat, key)
+                        logging.debug("Executing query {}".format(query_key))
                         cur.execute(self.queries[cat][key])
                         t[cat][key] = [ self.convtuple(tup) for tup in cur.fetchall() ]
-                        query_key = "{}/{}".format(cat, key)
                         jur.commit(query_key, json.dumps(t[cat][key]))
-                        t["history"][cat][key] = jur.history(query_key)
+                        if query_key == "counts/all":
+                                t["history"][cat][key] = jur.history(query_key)
             t["ts"] = { "last_update": calendar.timegm(time.gmtime(time.time())),
                         "update_interval": self.timeout }
         return t
@@ -128,7 +136,8 @@ def callback():
         return { "v": 0 }
 
 @route("/api/{}/history/<cat>/<key>".format(APIVER))
-def callback():
+def callback(cat, key):
+    print(cat,key)
     try:
         return { "v": PUBLIC["history"][cat][key] }
     except BaseException as err:
