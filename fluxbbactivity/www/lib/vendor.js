@@ -63,6 +63,40 @@ function counter_chart_show(key) {
   counter_chart_show_key(key);
 };
 
+function counter_chart_flatten_ts(ts, delta) {
+  let ts2 = [];
+  let bucket = [];
+  let lastkey = null;
+  let lastdate = null;
+  for(let i = 0; i < ts.length; i++) {
+    let d = new Date(ts[i][0]);
+    let k = `${d.getYear()}-${d.getMonth()}-${d.getDay()}`;
+    if(!lastkey || lastkey == k) {
+      bucket.push(ts[i][1]);
+      lastkey = k;
+      lastdate = d;
+      continue;
+    }
+    if(k != lastkey) {
+      let v = bucket.reduce((a,b) => { return Math.max(a,b); });
+
+      if(delta) {
+        if(ts2.length == 0) {
+          ts2.push([lastdate, 0]);
+        } else {
+          ts2.push([lastdate, v - ts2[ts2.length-1][1] ]);
+        }
+      } else {
+        ts2.push([lastdate, v]);
+      }
+      bucket = [];
+      lastkey = k;
+      lastdate = d;
+    }
+  }
+  return ts2;
+};
+
 /* Creates a timeseries for $key */
 function counter_chart_ts(key) {
   if(!COUNTER_CHART_DATA) return null;
@@ -78,6 +112,7 @@ function counter_chart_ts(key) {
 function counter_chart_show_key(key) {
   let canvas = document.querySelector("#counter-chart");
   let ts = counter_chart_ts(key);
+  ts = counter_chart_flatten_ts(ts, true);
   let spec = {
     type: "line",
     data: {
@@ -86,9 +121,19 @@ function counter_chart_show_key(key) {
         label: key,
         data: ts.map((v)=>{ return v[1]; })
       }]
+    },
+    options: {
+      xAxes: [
+        {
+          type:'time',
+          time: {
+          }
+        }
+      ]
     }
   };
-  if(COUNTER_CHART) delete COUNTER_CHART;
+  if(COUNTER_CHART)  COUNTER_CHART.destroy();
+  COUNTER_CHART = null;
   COUNTER_CHART = new Chart(canvas, spec);
 };
  
