@@ -44,17 +44,29 @@ h3{margin-bottom:2ex;}
               </thead>
               <tbody>
                 <tr>
-                  <td id="posts">-</td>
-                  <td id="topics">-</td>
-                  <td id="views">-</td>
-                  <td id="users">-</td>
-                  <td id="users_today">-</td>
-                  <td id="bans">-</td>
-                  <td id="messages">-</td>
-                  <td id="pending_registrations">-</td>
+                  <td><button type="button" class="btn btn-secondary bl-counter" id="posts">-</button></td>
+                  <td><button type="button" class="btn btn-secondary bl-counter" id="topics">-</button></td>
+                  <td><button type="button" class="btn btn-secondary bl-counter" id="views">-</button></td>
+                  <td><button type="button" class="btn btn-secondary bl-counter" id="users">-</button></td>
+                  <td><button type="button" class="btn btn-secondary bl-counter" id="users_today">-</button></td>
+                  <td><button type="button" class="btn btn-secondary bl-counter" id="bans">-</button></td>
+                  <td><button type="button" class="btn btn-secondary bl-counter" id="messages">-</button></td>
+                  <td><button type="button" class="btn btn-secondary bl-counter" id="pending_registrations">-</button></td>
                 </tr>
               </tbody>
           </table>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-block">
+              <p class="card-text">
+                <canvas id="counter-chart"></canvas>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 

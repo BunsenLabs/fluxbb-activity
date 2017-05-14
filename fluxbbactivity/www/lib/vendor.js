@@ -34,6 +34,63 @@ const DSCALE_OPTIONS = {
     yAxes: [{ ticks: { beginAtZero: true } }],
   }
 };
+
+var COUNTER_CHART= null;
+var COUNTER_CHART_COUNTER = null;
+var COUNTER_CHART_DATA = null;
+
+function counter_chart_init_buttons () {
+  document.querySelectorAll(".bl-counter").forEach((elem) => {
+    $(elem).click((e) => {
+      counter_chart_show(elem.getAttribute("id"));
+    });
+  });
+};
+
+function counter_chart_show(key) {
+  COUNTER_CHART_COUNTER = key || COUNTER_CHART_COUNTER;
+  if(!COUNTER_CHART_DATA) {
+    fetch(`api/${API_VERSION}/history/counts/all`).then((resp) => {
+      if(resp.status==200) {
+        resp.json().then((payload) => {
+          COUNTER_CHART_DATA = payload;
+          counter_chart_show_key(key);
+        });
+      }
+    });
+    return;
+  }
+  counter_chart_show_key(key);
+};
+
+/* Creates a timeseries for $key */
+function counter_chart_ts(key) {
+  if(!COUNTER_CHART_DATA) return null;
+  let ts = [];
+  COUNTER_CHART_DATA.v.forEach((record) => {
+    ts.push([record[0], record[1].filter((e) => {
+      return e[0] == key;
+    }).pop()[1]]);
+  });
+  return ts;
+};
+
+function counter_chart_show_key(key) {
+  let canvas = document.querySelector("#counter-chart");
+  let ts = counter_chart_ts(key);
+  let spec = {
+    type: "line",
+    data: {
+      labels: ts.map((v)=>{ return v[0]; }),
+      datasets:[ {
+        label: key,
+        data: ts.map((v)=>{ return v[1]; })
+      }]
+    }
+  };
+  if(COUNTER_CHART) delete COUNTER_CHART;
+  COUNTER_CHART = new Chart(canvas, spec);
+};
  
 function fetch_data() {
   let req = DATA_SPEC.map((spec) => {
@@ -108,7 +165,7 @@ function munge_data(anchor, data) {
 
 function update_stats_table(data) {
   data.forEach((vec) => {
-    let anchor = document.querySelector(`td#${vec[0]}`);
+    let anchor = document.querySelector(`#${vec[0]}`);
     if(anchor)
       anchor.textContent = vec[1].toLocaleString();
   });
@@ -182,5 +239,6 @@ function trigger() {
   });
 };
 
+counter_chart_init_buttons();
 $("button#last-update").click(trigger);
 trigger();
