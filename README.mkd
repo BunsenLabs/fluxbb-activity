@@ -5,6 +5,12 @@
 Activity stats dashboard for FluxBB mining the SQL database. The tool
 consists of a Python backend and a JS, in-browser frontend.
 
+ * Flexible SQL-based data gathering system
+ * Data journal with historical data, well-suited as a chart/delta/trend data source
+ * REST-API for both current and historical data
+ * Nice in-browser charts (based on Chart.js)
+ * (Relatively) good-looking default dashboard included
+
 ## Synopsis
 
 ```
@@ -24,6 +30,24 @@ optional arguments:
   --timeout TIMEOUT
   --journal JOURNAL
 ```
+## Dependencies
+
+* python3
+* python-bottle
+* python-mysqldb
+* python-cherrypy (optional)
+
+* sqlite3
+
+## Installation
+  
+ * Install the Python3 dependencies
+ * Clone the repository: `git clone https://github.com/BunsenLabs/fluxbb-activity.git`
+ * Run the Python service and point it to your FluxBB MySQL database:
+```
+python -m fluxbbactivity --address 127.0.0.1 --port 10000 --sql-db fluxdb0  --sql-socket /var/run/mysqld/mysqld.sock --sql-user reader --sql-password secret --timeout 1800 --journal journal.sqlite
+```
+ * Point your browser to the index page: `http://127.0.0.1:10000/index.html`, enjoy
 
 ## Environment variables
 
@@ -52,9 +76,4 @@ CREATE TABLE fluxbbajournal (
 * `value` -- the query result, in JSON format just as it would have been
   available through the API.
 
-## Dependencies
 
-* python3
-* python-bottle
-* python-mysqldb
-* python-cherrypy (optional)
