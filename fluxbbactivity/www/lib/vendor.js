@@ -64,6 +64,9 @@ function counter_chart_show(key) {
 };
 
 function counter_chart_flatten_ts(ts, delta) {
+  let day = [];
+  let prev = null;
+  let ts2 = [];
 
   let same = (x, y) => {
     let xx = x.date;
@@ -84,10 +87,6 @@ function counter_chart_flatten_ts(ts, delta) {
     };
   };
 
-  let day = [];
-  let prev = null;
-  let ts2 = [];
-
   ts.forEach((_) => {
     let tsv = parse(_);
 
@@ -100,8 +99,8 @@ function counter_chart_flatten_ts(ts, delta) {
     let daymax = day.reduce((u, v) => {
       return Math.max(u, v);
     });
-    ts2.push([ prev.date, daymax ]);
 
+    ts2.push([ prev.date, daymax ]);
 
     day = [];
     prev = tsv;
