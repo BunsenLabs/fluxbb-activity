@@ -64,36 +64,49 @@ function counter_chart_show(key) {
 };
 
 function counter_chart_flatten_ts(ts, delta) {
-  let ts2 = [];
-  let bucket = [];
-  let lastkey = null;
-  let lastdate = null;
-  for(let i = 0; i < ts.length; i++) {
-    let d = new Date(ts[i][0]);
-    let k = `${d.getYear()}-${d.getMonth()}-${d.getDay()}`;
-    if(!lastkey || lastkey == k) {
-      bucket.push(ts[i][1]);
-      lastkey = k;
-      lastdate = d;
-      continue;
-    }
-    if(k != lastkey) {
-      let v = bucket.reduce((a,b) => { return Math.max(a,b); });
 
-      if(delta) {
-        if(ts2.length == 0) {
-          ts2.push([lastdate, 0]);
-        } else {
-          ts2.push([lastdate, v - ts2[ts2.length-1][1] ]);
-        }
-      } else {
-        ts2.push([lastdate, v]);
-      }
-      bucket = [];
-      lastkey = k;
-      lastdate = d;
+  let same = (x, y) => {
+    let xx = x.date;
+    let yy = y.date;
+
+    if(xx.getFullYear() != yy.getFullYear() ||
+       xx.getMonth() != yy.getMonth() ||
+       xx.getDay() != yy.getDay())
+      return false;
+
+    return true;
+  };
+
+  let parse = (tsv) => {
+    return {
+      date: new Date(tsv[0]),
+      value: tsv[1]
+    };
+  };
+
+  let day = [];
+  let prev = null;
+  let ts2 = [];
+
+  ts.forEach((_) => {
+    let tsv = parse(_);
+
+    if(!prev || same(tsv, prev)) {
+      day.push(tsv.value);
+      prev = tsv;
+      return;
     }
-  }
+
+    let daymax = day.reduce((u, v) => {
+      return Math.max(u, v);
+    });
+    ts2.push([ prev.date, daymax ]);
+
+
+    day = [];
+    prev = tsv;
+  });
+
   return ts2;
 };
 
