@@ -113,6 +113,21 @@ function counter_chart_flatten_ts(ts, delta) {
   return ts2;
 };
 
+/* Transform keyed time series into a delta series */
+function counter_chart_todelta(ts) {
+  let ts2 = [];
+  let old = 0;
+  for(let i = 0; i < ts.length; i++) {
+    let k = ts[i][0];
+    let v = ts[i][1];
+    switch(i) {
+      case 0:   ts2[i] = [ k, 0 ]; old = v; break;
+      default:  ts2[i] = [ k, v - old ]; old = v;
+    }
+  }
+  return ts2;
+};
+
 /* Creates a timeseries for $key */
 function counter_chart_ts(key) {
   if(!COUNTER_CHART_DATA) return null;
@@ -128,15 +143,33 @@ function counter_chart_ts(key) {
 function counter_chart_show_key(key) {
   let canvas = document.querySelector("#counter-chart");
   let ts = counter_chart_ts(key);
-  ts = counter_chart_flatten_ts(ts, true);
+  ts = counter_chart_flatten_ts(ts);
+  ts_delta = counter_chart_todelta(ts);
   let spec = {
     type: "line",
+    options: {
+      scales: {
+        yAxes: [
+          { id: 'abs', type: 'linear', position: 'left' },
+          { id: 'delta', type: 'linear', position: 'right' }
+        ]
+      }
+    },
     data: {
       labels: ts.map((v)=>{ return v[0]; }),
-      datasets:[ {
-        label: key,
-        data: ts.map((v)=>{ return v[1]; })
-      }]
+      datasets:[
+        {
+          label: key,
+          yAxisID: 'abs',
+          data: ts.map((v)=>{ return v[1]; })
+        },
+        {
+          label: `delta_${key}`,
+          yAxisID: 'delta',
+          borderColor: '#aa0000',
+          data: ts_delta.map((v) => { return v[1]; })
+        }
+      ]
     }
   };
   if(COUNTER_CHART)  COUNTER_CHART.destroy();
