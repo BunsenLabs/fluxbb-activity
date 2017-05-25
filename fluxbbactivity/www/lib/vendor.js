@@ -34,6 +34,148 @@ const DSCALE_OPTIONS = {
     yAxes: [{ ticks: { beginAtZero: true } }],
   }
 };
+
+var COUNTER_CHART= null;
+var COUNTER_CHART_COUNTER = null;
+var COUNTER_CHART_DATA = null;
+
+function counter_chart_init_buttons () {
+  document.querySelectorAll(".bl-counter").forEach((elem) => {
+    $(elem).click((e) => {
+      counter_chart_show(elem.getAttribute("id"));
+    });
+  });
+};
+
+function counter_chart_show(key) {
+  COUNTER_CHART_COUNTER = key || COUNTER_CHART_COUNTER;
+  if(!COUNTER_CHART_DATA) {
+    fetch(`api/${API_VERSION}/history/counts/all`).then((resp) => {
+      if(resp.status==200) {
+        resp.json().then((payload) => {
+          COUNTER_CHART_DATA = payload;
+          counter_chart_show_key(key);
+        });
+      }
+    });
+    return;
+  }
+  counter_chart_show_key(key);
+};
+
+function counter_chart_flatten_ts(ts, delta) {
+  let day = [];
+  let prev = null;
+  let ts2 = [];
+
+  let same = (x, y) => {
+    let xx = x.date;
+    let yy = y.date;
+
+    if(xx.getFullYear() != yy.getFullYear() ||
+       xx.getMonth() != yy.getMonth() ||
+       xx.getDay() != yy.getDay())
+      return false;
+
+    return true;
+  };
+
+  let label = (date) => {
+    return `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}`;
+  };
+
+  let parse = (tsv) => {
+    return {
+      date: new Date(tsv[0]),
+      value: tsv[1]
+    };
+  };
+
+  ts.forEach((_) => {
+    let tsv = parse(_);
+
+    if(!prev || same(tsv, prev)) {
+      day.push(tsv.value);
+      prev = tsv;
+      return;
+    }
+
+    let daymax = day.reduce((u, v) => {
+      return Math.max(u, v);
+    });
+
+    ts2.push([ label(prev.date), daymax ]);
+
+    day = [];
+    prev = tsv;
+  });
+
+  return ts2;
+};
+
+/* Transform keyed time series into a delta series */
+function counter_chart_todelta(ts) {
+  let ts2 = [];
+  let old = 0;
+  for(let i = 0; i < ts.length; i++) {
+    let k = ts[i][0];
+    let v = ts[i][1];
+    switch(i) {
+      case 0:   ts2[i] = [ k, 0 ]; old = v; break;
+      default:  ts2[i] = [ k, v - old ]; old = v;
+    }
+  }
+  return ts2;
+};
+
+/* Creates a timeseries for $key */
+function counter_chart_ts(key) {
+  if(!COUNTER_CHART_DATA) return null;
+  let ts = [];
+  COUNTER_CHART_DATA.v.forEach((record) => {
+    ts.push([record[0], record[1].filter((e) => {
+      return e[0] == key;
+    }).pop()[1]]);
+  });
+  return ts;
+};
+
+function counter_chart_show_key(key) {
+  let canvas = document.querySelector("#counter-chart");
+  let ts = counter_chart_ts(key);
+  ts = counter_chart_flatten_ts(ts);
+  ts_delta = counter_chart_todelta(ts);
+  let spec = {
+    type: "line",
+    options: {
+      scales: {
+        yAxes: [
+          { id: 'abs', type: 'linear', position: 'left' },
+          { id: 'delta', type: 'linear', position: 'right' }
+        ]
+      }
+    },
+    data: {
+      labels: ts.map((v)=>{ return v[0]; }),
+      datasets:[
+        {
+          label: key,
+          yAxisID: 'abs',
+          data: ts.map((v)=>{ return v[1]; })
+        },
+        {
+          label: `delta_${key}`,
+          yAxisID: 'delta',
+          borderColor: '#aa0000',
+          data: ts_delta.map((v) => { return v[1]; })
+        }
+      ]
+    }
+  };
+  if(COUNTER_CHART)  COUNTER_CHART.destroy();
+  COUNTER_CHART = null;
+  COUNTER_CHART = new Chart(canvas, spec);
+};
  
 function fetch_data() {
   let req = DATA_SPEC.map((spec) => {
@@ -108,7 +250,7 @@ function munge_data(anchor, data) {
 
 function update_stats_table(data) {
   data.forEach((vec) => {
-    let anchor = document.querySelector(`td#${vec[0]}`);
+    let anchor = document.querySelector(`#${vec[0]}`);
     if(anchor)
       anchor.textContent = vec[1].toLocaleString();
   });
@@ -182,5 +324,6 @@ function trigger() {
   });
 };
 
+counter_chart_init_buttons();
 $("button#last-update").click(trigger);
 trigger();

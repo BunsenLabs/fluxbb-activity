@@ -65,6 +65,19 @@ class Journal:
                 (str(datetime.datetime.utcnow().isoformat()), APIVER, query, value,))
         self.conn.commit()
 
+    def history(self, key):
+        cur = self.conn.cursor()
+        cur.execute(""" SELECT date,value
+                        FROM journal
+                        WHERE query = ? AND apiversion = ?""",
+                (key, APIVER,));
+        rows = list(map(lambda v: [ v[0], json.loads(v[1]) ], cur.fetchall()))
+        self.conn.commit()
+        return rows
+
+    def __history_views(self):
+        pass
+
 class Fetcher(threading.Thread):
     def __init__(self, cconf, queries, timeout, journalpath):
         super().__init__()
@@ -87,16 +100,20 @@ class Fetcher(threading.Thread):
         logging.info("Fetcher.update() finished.")
 
     def query(self):
-        t = {}
+        t = { "history": dict() }
         with MySQLdb.connect(**self.cconf) as cur:
             with Journal(self.journal) as jur:
                 for cat in self.queries:
                     t[cat] = {}
+                    t["history"][cat] = {}
                     for key in self.queries[cat]:
-                        logging.debug("Executing query {}/{}".format(cat, key))
+                        query_key = "{}/{}".format(cat, key)
+                        logging.debug("Executing query {}".format(query_key))
                         cur.execute(self.queries[cat][key])
                         t[cat][key] = [ self.convtuple(tup) for tup in cur.fetchall() ]
-                        jur.commit("{}/{}".format(cat, key), json.dumps(t[cat][key]))
+                        jur.commit(query_key, json.dumps(t[cat][key]))
+                        if query_key == "counts/all":
+                                t["history"][cat][key] = jur.history(query_key)
             t["ts"] = { "last_update": calendar.timegm(time.gmtime(time.time())),
                         "update_interval": self.timeout }
         return t
@@ -106,11 +123,25 @@ class Fetcher(threading.Thread):
 
 @route("/api/{}/<cat>/<key>".format(APIVER))
 def dataroute(cat, key):
-    return { "v":PUBLIC[cat][key] }
+    if (cat in PUBLIC) and (key in PUBLIC[cat]):
+        return { "v":PUBLIC[cat][key] }
+    else:
+        return dict()
 
 @route("/api/{}/last-update".format(APIVER))
 def callback():
-    return { "v":PUBLIC["ts"] }
+    if "ts" in PUBLIC:
+        return { "v":PUBLIC["ts"] }
+    else:
+        return { "v": 0 }
+
+@route("/api/{}/history/<cat>/<key>".format(APIVER))
+def callback(cat, key):
+    print(cat,key)
+    try:
+        return { "v": PUBLIC["history"][cat][key] }
+    except BaseException as err:
+        return { "v": dict(), "error": err }
 
 @route('/<path:path>')
 def callback(path):
