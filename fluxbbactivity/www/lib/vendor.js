@@ -80,6 +80,10 @@ function counter_chart_flatten_ts(ts, delta) {
     return true;
   };
 
+  let label = (date) => {
+    return `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}`;
+  };
+
   let parse = (tsv) => {
     return {
       date: new Date(tsv[0]),
@@ -100,7 +104,7 @@ function counter_chart_flatten_ts(ts, delta) {
       return Math.max(u, v);
     });
 
-    ts2.push([ prev.date, daymax ]);
+    ts2.push([ label(prev.date), daymax ]);
 
     day = [];
     prev = tsv;
@@ -133,15 +137,6 @@ function counter_chart_show_key(key) {
         label: key,
         data: ts.map((v)=>{ return v[1]; })
       }]
-    },
-    options: {
-      xAxes: [
-        {
-          type:'time',
-          time: {
-          }
-        }
-      ]
     }
   };
   if(COUNTER_CHART)  COUNTER_CHART.destroy();
