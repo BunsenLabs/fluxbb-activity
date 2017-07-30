@@ -38,7 +38,6 @@ const DSCALE_OPTIONS = {
 var COUNTER_CHART= null;
 var COUNTER_CHART_COUNTER = null;
 var COUNTER_CHART_DATA = null;
-const COUNTER_CHART_LOOKBEHIND = 90;
 
 function counter_chart_init_buttons () {
   document.querySelectorAll(".bl-counter").forEach((elem) => {
@@ -115,7 +114,7 @@ function counter_chart_flatten_ts(ts, delta) {
     prev = tsv;
   });
 
-  return ts2.splice(-COUNTER_CHART_LOOKBEHIND);
+  return ts2;
 };
 
 /* Transform keyed time series into a delta series */
