@@ -145,6 +145,8 @@ function counter_chart_ts(key) {
 };
 
 function counter_chart_show_key(key) {
+  let row = document.querySelector("#counter-cahrt-row");
+  row.style.style.display = 'initial';
   let canvas = document.querySelector("#counter-chart");
   let ts = counter_chart_ts(key);
   ts = counter_chart_flatten_ts(ts);
