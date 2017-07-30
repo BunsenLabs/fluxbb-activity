@@ -81,7 +81,11 @@ function counter_chart_flatten_ts(ts, delta) {
   };
 
   let label = (date) => {
-    return `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}`;
+    let m = date.getMonth();
+    let d = date.getDay();
+    if (m<10) m = '0' + m;
+    if (d<10) d = '0' + d;
+    return `${date.getFullYear()}${m}${d}`;
   };
 
   let parse = (tsv) => {
