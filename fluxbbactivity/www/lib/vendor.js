@@ -90,7 +90,7 @@ function counter_chart_flatten_ts(ts, delta) {
 
   let parse = (tsv) => {
     return {
-      date: new Date(tsv[0]),
+      date: new Date(tsv[0] * 1000),
       value: tsv[1]
     };
   };

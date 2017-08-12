@@ -5,14 +5,15 @@ from bottle import abort, route, run, static_file
 import MySQLdb
 import calendar
 import datetime
+import dateutil.parser
+import json
 import logging
 import os
 import pathlib
+import sqlite3
 import sys
 import threading
 import time
-import sqlite3
-import json
 
 APIVER = 0
 PUBLIC = {}
@@ -71,7 +72,7 @@ class Journal:
                         FROM journal
                         WHERE query = ? AND apiversion = ?""",
                 (key, APIVER,));
-        rows = list(map(lambda v: [ v[0], json.loads(v[1]) ], cur.fetchall()))
+        rows = list(map(lambda v: [ int(dateutil.parser.parse(v[0]).timestamp()), json.loads(v[1]) ], cur.fetchall()))
         self.conn.commit()
         return rows
 
