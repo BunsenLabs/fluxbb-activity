@@ -110,7 +110,7 @@ function counter_chart_flatten_ts(ts, delta) {
 
     ts2.push([ label(prev.date), daymax ]);
 
-    day = [];
+    day = [ tsv.value ];
     prev = tsv;
   });
 
@@ -141,7 +141,11 @@ function counter_chart_ts(key) {
       return e[0] == key;
     }).pop()[1]]);
   });
-  return ts;
+  return ts.sort((x, y) => {
+    let xx = x[0];
+    let yy = y[0];
+    return xx > yy ? 1 : (yy == xx ? 0 : -1);
+  });
 };
 
 function counter_chart_show_key(key) {
