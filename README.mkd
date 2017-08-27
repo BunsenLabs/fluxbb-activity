@@ -11,6 +11,8 @@ consists of a Python backend and a JS, in-browser frontend.
  * Nice in-browser charts (based on Chart.js)
  * (Relatively) good-looking default dashboard included
 
+[![ScreenShot2017-08-28at00.07.42.md.png](https://cdn.scrot.moe/images/2017/08/28/ScreenShot2017-08-28at00.07.42.md.png)](https://scrot.moe/image/62tBv)
+
 ## Synopsis
 
 ```
