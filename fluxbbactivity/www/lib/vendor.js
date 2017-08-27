@@ -287,24 +287,33 @@ function make_table(anchor, data) {
   table.appendChild(thead);
 
   let tbody = document.createElement("tbody");
+
   body.forEach((row) => {
     let tr = document.createElement("tr");
-    let id = row[0];
-    let colidx = 0;
-    row.slice(1).forEach((col) => {
-      let td = document.createElement("td");
-      if(anchor.search(/^top-/)) {
+
+    /* topic-based tables */
+    if(anchor.search(/^top-/)) {
+      let id = row[0];
+      let colidx = 0;
+      row.slice(1).forEach((col) => {
+        let td = document.createElement("td");
         let a = document.createElement("a");
         a.setAttribute("href", `https://forums.bunsenlabs.org/viewtopic.php?id=${id}`);
         a.textContent = ++colidx>1 ? parseFloat(col).toLocaleString() : col;
         td.appendChild(a);
-      } else {
+        tr.appendChild(td);
+      });
+    } else {
+      row.forEach((col) => {
+        let td = document.createElement("td");
         td.textContent = col;
-      }
-      tr.appendChild(td);
-    });
+        tr.appendChild(td);
+      });
+    }
+
     tbody.appendChild(tr);
   });
+
   table.appendChild(tbody);
 };
 
