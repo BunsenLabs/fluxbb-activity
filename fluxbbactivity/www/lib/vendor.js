@@ -293,10 +293,14 @@ function make_table(anchor, data) {
     let colidx = 0;
     row.slice(1).forEach((col) => {
       let td = document.createElement("td");
-      let a = document.createElement("a");
-      a.setAttribute("href", `https://forums.bunsenlabs.org/viewtopic.php?id=${id}`);
-      a.textContent = ++colidx>1 ? parseFloat(col).toLocaleString() : col;
-      td.appendChild(a);
+      if(anchor.search(/^top-/)) {
+        let a = document.createElement("a");
+        a.setAttribute("href", `https://forums.bunsenlabs.org/viewtopic.php?id=${id}`);
+        a.textContent = ++colidx>1 ? parseFloat(col).toLocaleString() : col;
+        td.appendChild(a);
+      } else {
+        td.textContent = col;
+      }
       tr.appendChild(td);
     });
     tbody.appendChild(tr);
