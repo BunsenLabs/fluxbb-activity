@@ -18,4 +18,4 @@ FROM
 INNER JOIN posts AS d ON c.post_id=d.id
 GROUP BY d.poster
 ORDER BY score DESC
-LIMIT 20;
+LIMIT 10;
