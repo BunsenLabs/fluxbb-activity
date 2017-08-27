@@ -40,6 +40,7 @@ const DSCALE_OPTIONS = {
 var COUNTER_CHART= null;
 var COUNTER_CHART_COUNTER = null;
 var COUNTER_CHART_DATA = null;
+var FIRST_LOAD = true;
 
 function counter_chart_init_buttons () {
   document.querySelectorAll(".bl-counter").forEach((elem) => {
@@ -334,6 +335,11 @@ function update() {
         }
       });
     });
+  }).then(() => {
+    if(FIRST_LOAD) {
+      FIRST_LOAD = false;
+      $("button#views").click();
+    }
   });
 };
 
