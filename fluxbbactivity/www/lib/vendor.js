@@ -15,7 +15,8 @@ const DATA_SPEC = [
   [ "counts",                             `api/${API_VERSION}/counts/all` ],
   [ "#users-by-timezone",                 `api/${API_VERSION}/users/by-timezone` ],
   [ "#table-topics",                      `api/${API_VERSION}/topics/top-views` ],
-  [ "#table-topics-replies",              `api/${API_VERSION}/topics/top-replies` ]
+  [ "#table-topics-replies",              `api/${API_VERSION}/topics/top-replies` ],
+  [ "#table-helpful-hands",               `api/${API_VERSION}/meta/helpfulhands` ],
 ];
 const TABLE_HEADERS = {
   "#table-topics":          [ "Topic", "Views", "%" ],
