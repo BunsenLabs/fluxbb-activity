@@ -291,24 +291,27 @@ function make_table(anchor, data) {
   body.forEach((row) => {
     let tr = document.createElement("tr");
 
-    /* topic-based tables */
-    if(anchor.search(/^top-/)) {
-      let id = row[0];
-      let colidx = 0;
-      row.slice(1).forEach((col) => {
-        let td = document.createElement("td");
-        let a = document.createElement("a");
-        a.setAttribute("href", `https://forums.bunsenlabs.org/viewtopic.php?id=${id}`);
-        a.textContent = ++colidx>1 ? parseFloat(col).toLocaleString() : col;
-        td.appendChild(a);
-        tr.appendChild(td);
-      });
-    } else {
-      row.forEach((col) => {
-        let td = document.createElement("td");
-        td.textContent = col;
-        tr.appendChild(td);
-      });
+    switch(anchor) {
+      case '#table-topics':
+      case '#table-topics-replies':
+        let id = row[0];
+        let colidx = 0;
+        row.slice(1).forEach((col) => {
+          let td = document.createElement("td");
+          let a = document.createElement("a");
+          a.setAttribute("href", `https://forums.bunsenlabs.org/viewtopic.php?id=${id}`);
+          a.textContent = ++colidx>1 ? parseFloat(col).toLocaleString() : col;
+          td.appendChild(a);
+          tr.appendChild(td);
+        });
+        break;
+      case '#table-helpful-hands':
+        row.forEach((col) => {
+          let td = document.createElement("td");
+          td.textContent = col;
+          tr.appendChild(td);
+        });
+        break;
     }
 
     tbody.appendChild(tr);
