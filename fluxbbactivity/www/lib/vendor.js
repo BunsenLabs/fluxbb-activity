@@ -20,7 +20,8 @@ const DATA_SPEC = [
 ];
 const TABLE_HEADERS = {
   "#table-topics":          [ "Topic", "Views", "%" ],
-  "#table-topics-replies":  [ "Topic", "Replies", "%" ]
+  "#table-topics-replies":  [ "Topic", "Replies", "%" ],
+  "#table-helpful-hands":   [ "User", "Score" ],
 };
 const TSCALE_OPTIONS = {
   legend: { display: false },
