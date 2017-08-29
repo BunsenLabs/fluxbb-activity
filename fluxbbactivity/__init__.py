@@ -16,6 +16,7 @@ import threading
 import time
 
 APIVER = 0
+PRGARG = None
 PUBLIC = {}
 SQLDIR = None
 WWWDIR = None
@@ -36,6 +37,7 @@ def parse_cmdline():
     ap.add_argument("--port", type=int, default=10000)
     ap.add_argument("--timeout", type=int, default=900)
     ap.add_argument("--journal", required=True)
+    ap.add_argument("--fluxbb-uri", default="https://forums.bunsenlabs.org")
     args = ap.parse_args()
     if not args.sql_password:
         try:
@@ -144,6 +146,10 @@ def callback(cat, key):
     except BaseException as err:
         return { "v": dict(), "error": err }
 
+@route("/api/{}/upstream".format(APIVER))
+def callback():
+    return { "v": { "fluxbb_uri": PRGARG.fluxbb_uri } }
+
 @route('/<path:path>')
 def callback(path):
     return static_file(path, root=WWWDIR)
@@ -168,6 +174,7 @@ def main():
     cconf = { "db" : args.sql_db, "unix_socket" : args.sql_socket, "user" : args.sql_user, "passwd" : args.sql_password }
     fetcher = Fetcher(cconf, queries, args.timeout, args.journal)
     fetcher.start()
+    PRGARG = args
     try:
         run(host = args.address, port = args.port, server = "cherrypy")
     except:

@@ -17,6 +17,7 @@ const DATA_SPEC = [
   [ "#table-topics",                      `api/${API_VERSION}/topics/top-views` ],
   [ "#table-topics-replies",              `api/${API_VERSION}/topics/top-replies` ],
   [ "#table-helpful-hands",               `api/${API_VERSION}/meta/helpfulhands` ],
+  [ "upstream",                           `api/${API_VERSION}/upstream` ],
 ];
 const TABLE_HEADERS = {
   "#table-topics":          [ "Topic", "Views", "%" ],
@@ -36,12 +37,12 @@ const DSCALE_OPTIONS = {
     yAxes: [{ ticks: { beginAtZero: true } }],
   }
 };
-const FLUXBB_URI = 'https://forums.bunsenlabs.org';
 
 var COUNTER_CHART= null;
 var COUNTER_CHART_COUNTER = null;
 var COUNTER_CHART_DATA = null;
 var FIRST_LOAD = true;
+var FLUXBB_URI = null;
 
 function counter_chart_init_buttons () {
   document.querySelectorAll(".bl-counter").forEach((elem) => {
@@ -337,6 +338,8 @@ function update() {
         let rawdata = d.v;
         if(anchor === "counts") {
           update_stats_table(rawdata);
+        } else if(anchor === "upstream") {
+          FLUXBB_URI = rawdata.fluxbb_uri;
         } else if(anchor.startsWith("#table-")) {
           make_table(anchor, rawdata);
         } else {
