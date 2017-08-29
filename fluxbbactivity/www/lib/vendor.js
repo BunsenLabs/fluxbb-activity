@@ -21,7 +21,7 @@ const DATA_SPEC = [
 const TABLE_HEADERS = {
   "#table-topics":          [ "Topic", "Views", "%" ],
   "#table-topics-replies":  [ "Topic", "Replies", "%" ],
-  "#table-helpful-hands":   [ "User", "Score" ],
+  "#table-helpful-hands":   [ "User", "First replies" ],
 };
 const TSCALE_OPTIONS = {
   legend: { display: false },
@@ -36,6 +36,7 @@ const DSCALE_OPTIONS = {
     yAxes: [{ ticks: { beginAtZero: true } }],
   }
 };
+const FLUXBB_URI = 'https://forums.bunsenlabs.org';
 
 var COUNTER_CHART= null;
 var COUNTER_CHART_COUNTER = null;
@@ -298,16 +299,21 @@ function make_table(anchor, data) {
         row.slice(1).forEach((col) => {
           let td = document.createElement("td");
           let a = document.createElement("a");
-          a.setAttribute("href", `https://forums.bunsenlabs.org/viewtopic.php?id=${id}`);
+          a.setAttribute("href", `${FLUXBB_URI}/viewtopic.php?id=${id}`);
           a.textContent = ++colidx>1 ? parseFloat(col).toLocaleString() : col;
           td.appendChild(a);
           tr.appendChild(td);
         });
         break;
       case '#table-helpful-hands':
-        row.forEach((col) => {
+        let id = row[0];
+        let colidx = 0;
+        row.slice(1).forEach((col) => {
           let td = document.createElement("td");
-          td.textContent = col;
+          let a = document.createElement("a");
+          a.setAttribute("href", `${FLUXBB_URI}/profile.php?id=${id}`);
+          a.textContent = col;
+          td.appendChild(a);
           tr.appendChild(td);
         });
         break;

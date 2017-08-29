@@ -1,4 +1,5 @@
-SELECT d.poster,
+SELECT d.poster_id,
+       d.poster,
        COUNT(*) AS score
 FROM
   (SELECT a.topic_id,
