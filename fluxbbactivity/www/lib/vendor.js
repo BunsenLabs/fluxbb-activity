@@ -294,28 +294,32 @@ function make_table(anchor, data) {
     switch(anchor) {
       case '#table-topics':
       case '#table-topics-replies':
-        let id = row[0];
-        let colidx = 0;
-        row.slice(1).forEach((col) => {
-          let td = document.createElement("td");
-          let a = document.createElement("a");
-          a.setAttribute("href", `${FLUXBB_URI}/viewtopic.php?id=${id}`);
-          a.textContent = ++colidx>1 ? parseFloat(col).toLocaleString() : col;
-          td.appendChild(a);
-          tr.appendChild(td);
-        });
+        {
+          let id = row[0];
+          let colidx = 0;
+          row.slice(1).forEach((col) => {
+            let td = document.createElement("td");
+            let a = document.createElement("a");
+            a.setAttribute("href", `${FLUXBB_URI}/viewtopic.php?id=${id}`);
+            a.textContent = ++colidx>1 ? parseFloat(col).toLocaleString() : col;
+            td.appendChild(a);
+            tr.appendChild(td);
+          });
+        }
         break;
       case '#table-helpful-hands':
-        let id = row[0];
-        let colidx = 0;
-        row.slice(1).forEach((col) => {
-          let td = document.createElement("td");
-          let a = document.createElement("a");
-          a.setAttribute("href", `${FLUXBB_URI}/profile.php?id=${id}`);
-          a.textContent = col;
-          td.appendChild(a);
-          tr.appendChild(td);
-        });
+        {
+          let id = row[0];
+          let colidx = 0;
+          row.slice(1).forEach((col) => {
+            let td = document.createElement("td");
+            let a = document.createElement("a");
+            a.setAttribute("href", `${FLUXBB_URI}/profile.php?id=${id}`);
+            a.textContent = col;
+            td.appendChild(a);
+            tr.appendChild(td);
+          });
+        }
         break;
     }
 
