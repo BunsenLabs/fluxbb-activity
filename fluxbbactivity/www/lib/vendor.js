@@ -1,6 +1,7 @@
 const [ ANCHOR, URL ] = [ 0, 1 ];
 const API_VERSION = 0;
 const DATA_SPEC = [
+  [ "backend-url",                        `api/${API_VERSION}/backend_url` ],
   [ "#posts-per-hour",                    `api/${API_VERSION}/posts/per-hour` ],
   [ "#posts-per-month-year",              `api/${API_VERSION}/posts/per-month-year` ],
   [ "#registrations-per-hour",            `api/${API_VERSION}/registrations/per-hour` ],
@@ -17,7 +18,6 @@ const DATA_SPEC = [
   [ "#table-topics",                      `api/${API_VERSION}/topics/top-views` ],
   [ "#table-topics-replies",              `api/${API_VERSION}/topics/top-replies` ],
   [ "#table-helpful-hands",               `api/${API_VERSION}/meta/helpfulhands` ],
-  [ "backend-url",                        `api/${API_VERSION}/backend_url` ],
 ];
 const TABLE_HEADERS = {
   "#table-topics":          [ "Topic", "Views", "%" ],
