@@ -16,7 +16,7 @@ import threading
 import time
 
 APIVER = 0
-PRGARG = None
+BACKEND_URL = 'https://forums.bunsenlabs.org'
 PUBLIC = {}
 SQLDIR = None
 WWWDIR = None
@@ -37,7 +37,7 @@ def parse_cmdline():
     ap.add_argument("--port", type=int, default=10000)
     ap.add_argument("--timeout", type=int, default=900)
     ap.add_argument("--journal", required=True)
-    ap.add_argument("--fluxbb-uri", default="https://forums.bunsenlabs.org")
+    ap.add_argument("--backend-url", default="https://forums.bunsenlabs.org")
     args = ap.parse_args()
     if not args.sql_password:
         try:
@@ -124,36 +124,6 @@ class Fetcher(threading.Thread):
     def convtuple(self, tup):
         return list(tup[:-1]) + [ float(tup[-1]) ]
 
-@route("/api/{}/<cat>/<key>".format(APIVER))
-def dataroute(cat, key):
-    if (cat in PUBLIC) and (key in PUBLIC[cat]):
-        return { "v":PUBLIC[cat][key] }
-    else:
-        return dict()
-
-@route("/api/{}/last-update".format(APIVER))
-def callback():
-    if "ts" in PUBLIC:
-        return { "v":PUBLIC["ts"] }
-    else:
-        return { "v": 0 }
-
-@route("/api/{}/history/<cat>/<key>".format(APIVER))
-def callback(cat, key):
-    print(cat,key)
-    try:
-        return { "v": PUBLIC["history"][cat][key] }
-    except BaseException as err:
-        return { "v": dict(), "error": err }
-
-@route("/api/{}/upstream".format(APIVER))
-def callback():
-    return { "v": { "fluxbb_uri": PRGARG.fluxbb_uri } }
-
-@route('/<path:path>')
-def callback(path):
-    return static_file(path, root=WWWDIR)
-
 def find_queries(query_dir):
     t = {}
     for root, dirs, files in os.walk(query_dir):
@@ -167,16 +137,53 @@ def find_queries(query_dir):
                 t[cat][key] = data
     return t
 
+def install_routes():
+    @route("/api/{}/<cat>/<key>".format(APIVER))
+    def dataroute(cat, key):
+        if (cat in PUBLIC) and (key in PUBLIC[cat]):
+            return { "v":PUBLIC[cat][key] }
+        else:
+            return dict()
+
+    @route("/api/{}/last-update".format(APIVER))
+    def callback():
+        if "ts" in PUBLIC:
+            return { "v":PUBLIC["ts"] }
+        else:
+            return { "v": 0 }
+
+    @route("/api/{}/history/<cat>/<key>".format(APIVER))
+    def callback(cat, key):
+        print(cat,key)
+        try:
+            return { "v": PUBLIC["history"][cat][key] }
+        except BaseException as err:
+            return { "v": dict(), "error": err }
+
+    @route('/<path:path>')
+    def callback(path):
+        return static_file(path, root=WWWDIR)
+
+    @route("/api/{}/backend_url".format(APIVER))
+    def callback():
+        return { "v": { "backend_url": BACKEND_URL } }
+
 def main():
     logging.basicConfig(level=logging.DEBUG, format="%(asctime)s : %(name)s : %(levelname)s : %(message)s")
+
     args = parse_cmdline()
+    BACKEND_URL = args.backend_url
+
     queries = find_queries(SQLDIR)
     cconf = { "db" : args.sql_db, "unix_socket" : args.sql_socket, "user" : args.sql_user, "passwd" : args.sql_password }
     fetcher = Fetcher(cconf, queries, args.timeout, args.journal)
     fetcher.start()
-    PRGARG = args
+
+    install_routes()
+
     try:
         run(host = args.address, port = args.port, server = "cherrypy")
     except:
         run(host = args.address, port = args.port)
+
     return 0

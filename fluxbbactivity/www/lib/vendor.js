@@ -17,7 +17,7 @@ const DATA_SPEC = [
   [ "#table-topics",                      `api/${API_VERSION}/topics/top-views` ],
   [ "#table-topics-replies",              `api/${API_VERSION}/topics/top-replies` ],
   [ "#table-helpful-hands",               `api/${API_VERSION}/meta/helpfulhands` ],
-  [ "upstream",                           `api/${API_VERSION}/upstream` ],
+  [ "backend-url",                        `api/${API_VERSION}/backend_url` ],
 ];
 const TABLE_HEADERS = {
   "#table-topics":          [ "Topic", "Views", "%" ],
@@ -338,8 +338,8 @@ function update() {
         let rawdata = d.v;
         if(anchor === "counts") {
           update_stats_table(rawdata);
-        } else if(anchor === "upstream") {
-          FLUXBB_URI = rawdata.fluxbb_uri;
+        } else if(anchor === "backend-url") {
+          FLUXBB_URI = rawdata.backend_url;
         } else if(anchor.startsWith("#table-")) {
           make_table(anchor, rawdata);
         } else {
