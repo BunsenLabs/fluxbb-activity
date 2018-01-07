@@ -78,16 +78,16 @@ function counter_chart_flatten_ts(ts, delta) {
     let yy = y.date;
 
     if(xx.getFullYear() != yy.getFullYear() ||
-       xx.getMonth() != yy.getMonth() ||
-       xx.getDay() != yy.getDay())
+       xx.getMonth()    != yy.getMonth() ||
+       xx.getDate()     != yy.getDate())
       return false;
 
     return true;
   };
 
   let label = (date) => {
-    let m = date.getMonth();
-    let d = date.getDay();
+    let m = date.getMonth() + 1;
+    let d = date.getDate();
     if (m<10) m = '0' + m;
     if (d<10) d = '0' + d;
     return `${date.getFullYear()}${m}${d}`;
