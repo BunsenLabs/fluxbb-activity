@@ -119,7 +119,7 @@ function counter_chart_flatten_ts(ts, delta) {
     prev = tsv;
   });
 
-  return ts2;
+  return ts2.slice(-128);
 };
 
 /* Transform keyed time series into a delta series */
