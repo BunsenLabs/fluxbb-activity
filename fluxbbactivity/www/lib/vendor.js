@@ -174,7 +174,8 @@ function counter_chart_show_key(key) {
         {
           label: key,
           yAxisID: 'abs',
-          data: ts.map((v)=>{ return v[1]; })
+          data: ts.map((v)=>{ return v[1]; }),
+          hidden: true
         },
         {
           label: `delta_${key}`,
