@@ -225,7 +225,7 @@ function munge_data(anchor, data) {
       options:DSCALE_OPTIONS
     },
     "per-hour": {
-      type:"line",
+      type:"bar",
       values: () => { return data.map((v) => { return v[1]; }); },
       labels: () => { return data.map((v) => { let n = v[0]; return n<10 ? `0${n}:00` : `${n}:00`; }); },
       options: DSCALE_OPTIONS
