@@ -8,7 +8,6 @@ const DATA_SPEC = [
   [ "#bans-by-creator",                   `api/${API_VERSION}/bans/by-creator` ],
   [ "#top-posters",                       `api/${API_VERSION}/posts/by-user` ],
   [ "#pms-per-month-year",                `api/${API_VERSION}/pms/per-month-year`],
-  [ "#posts-per-day-month-year",          `api/${API_VERSION}/posts/recent`],
   [ "#topics-per-day-month-year",         `api/${API_VERSION}/topics/recent`],
   [ "#posts-per-week",                    `api/${API_VERSION}/posts/by-week`],
   [ "#topics-per-week",                   `api/${API_VERSION}/topics/by-week`],
