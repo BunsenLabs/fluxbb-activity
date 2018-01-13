@@ -4,7 +4,6 @@ const DATA_SPEC = [
   [ "backend-url",                        `api/${API_VERSION}/backend_url` ],
   [ "#posts-per-hour",                    `api/${API_VERSION}/posts/per-hour` ],
   [ "#posts-per-month-year",              `api/${API_VERSION}/posts/per-month-year` ],
-  [ "#registrations-per-hour",            `api/${API_VERSION}/registrations/per-hour` ],
   [ "#registrations-per-month-year",      `api/${API_VERSION}/registrations/per-month-year` ],
   [ "#bans-by-creator",                   `api/${API_VERSION}/bans/by-creator` ],
   [ "#top-posters",                       `api/${API_VERSION}/posts/by-user` ],
